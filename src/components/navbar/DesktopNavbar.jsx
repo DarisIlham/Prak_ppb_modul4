@@ -6,6 +6,7 @@ export default function DesktopNavbar({ currentPage, onNavigate }) {
     { id: 'home', label: 'Beranda' },
     { id: 'makanan', label: 'Makanan' },
     { id: 'minuman', label: 'Minuman' },
+    { id: 'favorites', label: 'Favorit' },
     { id: 'profile', label: 'Profile' }
   ];
 

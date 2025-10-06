@@ -2,7 +2,7 @@
 import { Clock, Star, ChefHat } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function RecipeGrid({ recipes, onSelect }) {
+export default function RecipeGrid({ recipes, onSelect, favorites, toggleFavorite }) {
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
 
@@ -66,6 +66,15 @@ export default function RecipeGrid({ recipes, onSelect }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
               <div className="relative z-10 p-4 md:p-8">
+                <div className="absolute top-3 right-3 z-20">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleFavorite && toggleFavorite('makanan', recipe.id); }}
+                    className={`p-1 rounded-full bg-white/80 hover:bg-white text-red-500 transition-colors`}
+                    aria-label="toggle favorite"
+                  >
+                    {favorites && Array.isArray(favorites.makanan) && favorites.makanan.map(Number).includes(Number(recipe.id)) ? '♥' : '♡'}
+                  </button>
+                </div>
                 <div className="flex items-center justify-between mb-3 md:mb-4">
                   <span className="text-xs font-semibold text-blue-700 bg-blue-100/90 px-2 md:px-3 py-1 md:py-1.5 rounded-full">
                     Makanan

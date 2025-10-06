@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { ResepMinuman } from "../data/minuman";
 import RecipeGrid from "../components/minuman/RecipeGrid";
-export default function MinumanPage({ onSelect }) {
+export default function MinumanPage({ onSelect, favorites, toggleFavorite }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const allMinuman = Object.values(ResepMinuman.resep);
@@ -29,7 +29,7 @@ green-50 via-white to-cyan-50 pb-20 md:pb-8"
         className="max-w-7xl mx-auto px-4 md:px-8 py-8
 md:py-12"
       >
-  <RecipeGrid recipes={filteredRecipes} onSelect={onSelect} />
+  <RecipeGrid recipes={filteredRecipes} onSelect={onSelect} favorites={favorites} toggleFavorite={toggleFavorite} />
       </main>
     </div>
   );
