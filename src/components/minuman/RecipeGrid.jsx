@@ -2,7 +2,7 @@
 import { Clock, Star, ChefHat } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function RecipeGrid({ recipes }) {
+export default function RecipeGrid({ recipes, onSelect }) {
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
 
@@ -45,6 +45,7 @@ export default function RecipeGrid({ recipes }) {
           <div 
             key={recipe.id} 
             ref={el => cardRefs.current[index] = el}
+            onClick={() => onSelect && onSelect(recipe.id)}
             className={`group transform transition-all duration-700 ${
               visibleCards.has(index) 
                 ? 'translate-y-0 opacity-100' 

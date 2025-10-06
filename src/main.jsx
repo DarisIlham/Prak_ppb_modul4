@@ -5,6 +5,8 @@ import SplashScreen from './pages/SplashScreen';
 import HomePage from './pages/HomePage';
 import MakananPage from './pages/MakananPage';
 import MinumanPage from './pages/MinumanPage';
+import DetailMakananPage from './pages/detailMakananPage';
+import DetailMinumanPage from './pages/detailMinumanPage';
 import ProfilePage from './pages/ProfilePage';
 import DesktopNavbar from './components/navbar/DesktopNavbar';
 import MobileNavbar from './components/navbar/MobileNavbar';
@@ -14,6 +16,8 @@ import PWABadge from './PWABadge';
 function AppRoot() {
   const [showSplash, setShowSplash] = useState(true);
   const [currentPage, setCurrentPage] = useState('home');
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -23,16 +27,33 @@ function AppRoot() {
     setCurrentPage(page);
   };
 
+  const handleSelectRecipe = (type, id) => {
+    setSelectedType(type);
+    setSelectedId(id);
+    setCurrentPage(type === 'makanan' ? 'makanan-detail' : 'minuman-detail');
+  };
+
+  const handleBackFromDetail = () => {
+    // go back to the list page for the selected type
+    setCurrentPage(selectedType || 'home');
+    setSelectedType(null);
+    setSelectedId(null);
+  };
+
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
         return <HomePage />;
       case 'makanan':
-        return <MakananPage />;
+        return <MakananPage onSelect={(id) => handleSelectRecipe('makanan', id)} />;
       case 'minuman':
-        return <MinumanPage />;
+        return <MinumanPage onSelect={(id) => handleSelectRecipe('minuman', id)} />;
       case 'profile':
         return <ProfilePage />;
+      case 'makanan-detail':
+        return <DetailMakananPage id={selectedId} onBack={handleBackFromDetail} />;
+      case 'minuman-detail':
+        return <DetailMinumanPage id={selectedId} onBack={handleBackFromDetail} />;
       default:
         return <HomePage />;
     }
@@ -59,6 +80,8 @@ function AppRoot() {
     </div>
   );
 }
+
+export default AppRoot;
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
