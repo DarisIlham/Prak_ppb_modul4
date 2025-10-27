@@ -1,7 +1,8 @@
 // src/components/minuman/RecipeGrid.jsx
-import { Clock, Star, ChefHat, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, Star, ChefHat } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import Pagination from '../shared/Pagination';
 
 function RecipeGrid({ recipes, onSelect, favorites, toggleFavorite }) {
   const [visibleCards, setVisibleCards] = useState(new Set());
@@ -122,27 +123,11 @@ function RecipeGrid({ recipes, onSelect, favorites, toggleFavorite }) {
 
       {/* Pagination Controls */}
       {recipes.length > cardsPerPage && (
-        <div className="flex justify-center items-center mt-6 gap-4">
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-            disabled={currentPage === 1}
-            className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent"
-          >
-            <ChevronLeft size={24} />
-          </button>
-          
-          <span className="text-gray-700">
-            Page {currentPage} of {totalPages}
-          </span>
-          
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-            disabled={currentPage === totalPages}
-            className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent"
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       )}
     </section>
   );

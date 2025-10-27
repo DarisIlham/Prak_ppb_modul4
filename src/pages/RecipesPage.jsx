@@ -4,12 +4,14 @@ import { ResepMakanan } from '../data/makanan';
 import { ResepMinuman } from '../data/minuman';
 import RecipeGridMakanan from '../components/makanan/RecipeGrid';
 import RecipeGridMinuman from '../components/minuman/RecipeGrid';
+import Pagination from '../components/shared/Pagination';
+import PropTypes from 'prop-types';
 
-export default function RecipesPage({ initialType = 'makanan', onSelect, favorites, toggleFavorite }) {
+function RecipesPage({ initialType = 'makanan', onSelect, favorites, toggleFavorite }) {
   const [type, setType] = useState(initialType || 'makanan');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 3; // Set to 3 items per page as requested
 
   useEffect(() => {
     setPage(1);
@@ -94,20 +96,26 @@ export default function RecipesPage({ initialType = 'makanan', onSelect, favorit
         )}
 
         {/* Pagination */}
-        <div className="flex items-center justify-center mt-8 space-x-3">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="px-3 py-2 bg-white border rounded disabled:opacity-50"
-          >Sebelumnya</button>
-          <div className="px-3 py-2 bg-white border rounded">{page} / {totalPages}</div>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="px-3 py-2 bg-white border rounded disabled:opacity-50"
-          >Berikutnya</button>
-        </div>
+        {filtered.length > itemsPerPage && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
       </main>
     </div>
   );
 }
+
+RecipesPage.propTypes = {
+  initialType: PropTypes.oneOf(['makanan', 'minuman', 'both']),
+  onSelect: PropTypes.func,
+  favorites: PropTypes.shape({
+    makanan: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+    minuman: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  }),
+  toggleFavorite: PropTypes.func,
+};
+
+export default RecipesPage;
