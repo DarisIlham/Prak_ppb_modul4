@@ -1,10 +1,23 @@
 // src/components/minuman/RecipeGrid.jsx
-import { Clock, Star, ChefHat } from 'lucide-react';
+import { Clock, Star, ChefHat, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
-export default function RecipeGrid({ recipes, onSelect, favorites, toggleFavorite }) {
+function RecipeGrid({ recipes, onSelect, favorites, toggleFavorite }) {
   const [visibleCards, setVisibleCards] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const cardsPerPage = 3;
   const cardRefs = useRef([]);
+
+  const totalPages = Math.ceil(recipes.length / cardsPerPage);
+  const startIndex = (currentPage - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
+  const currentRecipes = recipes.slice(startIndex, endIndex);
+
+  // Reset to first page when recipes change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [recipes]);
 
   useEffect(() => {
     cardRefs.current = cardRefs.current.slice(0, recipes.length);
@@ -41,7 +54,7 @@ export default function RecipeGrid({ recipes, onSelect, favorites, toggleFavorit
         Temukan minuman segar, hangat, dan kekinian. Mulai dari kopi hingga jus buah, semua ada di sini.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-        {recipes.map((recipe, index) => (
+        {currentRecipes.map((recipe, index) => (
           <div 
             key={recipe.id} 
             ref={el => cardRefs.current[index] = el}
@@ -106,6 +119,50 @@ export default function RecipeGrid({ recipes, onSelect, favorites, toggleFavorit
             <p className="text-slate-500">Minuman tidak ditemukan. Coba kata kunci lain.</p>
         </div>
       )}
+
+      {/* Pagination Controls */}
+      {recipes.length > cardsPerPage && (
+        <div className="flex justify-center items-center mt-6 gap-4">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      )}
     </section>
   );
 }
+
+RecipeGrid.propTypes = {
+  recipes: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      image_url: PropTypes.string,
+      ingredients: PropTypes.array,
+      steps: PropTypes.array,
+    })
+  ).isRequired,
+  onSelect: PropTypes.func,
+  favorites: PropTypes.shape({
+    minuman: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
+  }),
+  toggleFavorite: PropTypes.func,
+};
+
+export default RecipeGrid;
